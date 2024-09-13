@@ -3,49 +3,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web Design Services</title>
+    <title>Umfassende Web-Lösungen</title>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
             margin: 0;
             padding: 0;
+            background-color: #f0f8ff;
+            color: #333;
         }
         .container {
-            width: 80%;
+            width: 90%;
+            max-width: 1200px;
             margin: auto;
             overflow: hidden;
             padding: 20px;
         }
         header {
-            background: #35495e;
+            background: linear-gradient(135deg, #1e5799 0%,#2989d8 50%,#207cca 51%,#7db9e8 100%);
             color: #ffffff;
-            padding-top: 30px;
-            min-height: 70px;
-            border-bottom: #41b883 3px solid;
+            padding: 30px 0;
+            text-align: center;
         }
         header h1 {
             margin: 0;
-            text-align: center;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
         .service {
-            background: #f4f4f4;
-            border: 1px solid #ccc;
-            padding: 20px;
-            margin-bottom: 20px;
+            background: #ffffff;
+            border: none;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .service:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
         }
         .highlight {
-            background: #41b883;
+            background: linear-gradient(45deg, #ff6b6b, #feca57);
             color: #ffffff;
-            padding: 10px;
-            margin-top: 20px;
+            padding: 30px;
+            margin: 40px 0;
+            border-radius: 10px;
+            text-align: center;
         }
         .contact {
-            background: #35495e;
+            background: #2c3e50;
             color: #ffffff;
-            padding: 20px;
+            padding: 40px;
             text-align: center;
+            border-radius: 10px;
+            margin-top: 40px;
+        }
+        .feature-list {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .feature-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .feature-list li:before {
+            content: "✓ ";
+            color: #2ecc71;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .price {
+            font-size: 1.5em;
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        .cta-button {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+        .cta-button:hover {
+            background-color: #2980b9;
+        }
+        .portfolio {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            margin-top: 40px;
+        }
+        .portfolio-item {
+            width: 30%;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+        }
+        .portfolio-item img {
+            width: 100%;
+            height: auto;
+            transition: transform 0.3s ease;
+        }
+        .portfolio-item:hover img {
+            transform: scale(1.1);
+        }
+        .portfolio-description {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(0,0,0,0.7);
+            color: white;
+            padding: 10px;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+        .portfolio-item:hover .portfolio-description {
+            transform: translateY(0);
         }
     </style>
 </head>
@@ -61,18 +142,35 @@
             <div v-for="service in services" :key="service.type" class="service">
                 <h2>{{ service.type }}</h2>
                 <p>{{ service.description }}</p>
-                <p><strong>Preis: {{ service.price }}</strong></p>
+                <ul class="feature-list">
+                    <li v-for="feature in service.features" :key="feature">{{ feature }}</li>
+                </ul>
+                <p class="price">{{ service.price }}</p>
+                <a href="#contact" class="cta-button">Jetzt anfragen</a>
             </div>
 
             <div class="highlight">
                 <h2>{{ customHighlight }}</h2>
                 <p>{{ customDescription }}</p>
+                <a href="#contact" class="cta-button">Kostenloses Beratungsgespräch</a>
+            </div>
+
+            <h2>Unsere Erfolgsgeschichten</h2>
+            <div class="portfolio">
+                <div v-for="project in portfolioProjects" :key="project.title" class="portfolio-item">
+                    <img :src="project.image" :alt="project.title">
+                    <div class="portfolio-description">
+                        <h3>{{ project.title }}</h3>
+                        <p>{{ project.description }}</p>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="contact">
+        <div id="contact" class="contact">
             <h2>Kontakt</h2>
             <p>{{ contactInfo }}</p>
+            <a href="mailto:max@example.com" class="cta-button">E-Mail senden</a>
         </div>
     </div>
 
@@ -80,22 +178,62 @@
         new Vue({
             el: '#app',
             data: {
-                title: 'Professionelle Website-Erstellung',
+                title: 'Innovative Web-Lösungen für Ihren Erfolg',
                 services: [
                     {
                         type: 'Statische Websites',
                         description: 'Perfekt für Kleinunternehmen und persönliche Webseiten. Schnell, effizient und kostengünstig.',
+                        features: [
+                            'Responsive Design',
+                            'SEO-Optimierung',
+                            'Schnelle Ladezeiten'
+                        ],
                         price: 'Ab 500€'
                     },
                     {
-                        type: 'Dynamische Websites',
-                        description: 'Ideal für wachsende Unternehmen mit regelmäßigen Updates. Inklusive Content-Management-System.',
-                        price: 'Ab 1000€'
+                        type: 'Dynamische Websites & Webshops',
+                        description: 'Ideal für wachsende Unternehmen mit regelmäßigen Updates und E-Commerce-Bedarf.',
+                        features: [
+                            'Content-Management-System',
+                            'E-Commerce-Funktionalitäten',
+                            'Produktkatalog und Warenkorb',
+                            'Sichere Zahlungsabwicklung'
+                        ],
+                        price: 'Ab 1500€'
+                    },
+                    {
+                        type: 'Cloud-basierte Skalierbare Lösungen',
+                        description: 'Hochleistungsfähige Webanwendungen für Unternehmen mit hohen Anforderungen an Skalierbarkeit und Leistung.',
+                        features: [
+                            'Cloud-Infrastruktur (AWS, Azure, GCP)',
+                            'Automatische Skalierung',
+                            'Hochverfügbarkeit',
+                            'CI/CD-Pipeline-Integration',
+                            'DevOps-Best-Practices'
+                        ],
+                        price: 'Ab 3000€'
                     }
                 ],
-                customHighlight: 'Maßgeschneiderte Lösungen',
-                customDescription: 'Wir erstellen Ihre Website genau nach Ihren Wünschen. Schnell, einfach und unkompliziert!',
-                contactInfo: 'Max Mustermann | Email: max@example.com | Tel: 0123 456789'
+                customHighlight: 'Maßgeschneiderte Lösungen für Ihren Erfolg',
+                customDescription: 'Wir erstellen Ihre Webpräsenz genau nach Ihren Anforderungen. Von einfachen Websites bis hin zu komplexen, skalierbaren Cloud-Lösungen - schnell, effizient und zukunftssicher!',
+                contactInfo: 'Niels Hensler | Email: max@example.com | Tel: +49 123 456789',
+                portfolioProjects: [
+                    {
+                        title: 'E-Commerce-Plattform',
+                        description: 'Skalierbare Lösung für einen führenden Online-Händler',
+                        image: '/api/placeholder/400/300'
+                    },
+                    {
+                        title: 'Unternehmensportal',
+                        description: 'Integrierte Lösung für interne Kommunikation und Ressourcenmanagement',
+                        image: '/api/placeholder/400/300'
+                    },
+                    {
+                        title: 'Mobil-optimierte Website',
+                        description: 'Responsive Design für optimale Nutzererfahrung auf allen Geräten',
+                        image: '/api/placeholder/400/300'
+                    }
+                ]
             }
         });
     </script>
