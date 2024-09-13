@@ -1,9 +1,103 @@
 <!DOCTYPE html>
-<html>
+<html lang="de">
 <head>
-    <title>Hello, World!</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Design Services</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+            padding: 20px;
+        }
+        header {
+            background: #35495e;
+            color: #ffffff;
+            padding-top: 30px;
+            min-height: 70px;
+            border-bottom: #41b883 3px solid;
+        }
+        header h1 {
+            margin: 0;
+            text-align: center;
+        }
+        .service {
+            background: #f4f4f4;
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .highlight {
+            background: #41b883;
+            color: #ffffff;
+            padding: 10px;
+            margin-top: 20px;
+        }
+        .contact {
+            background: #35495e;
+            color: #ffffff;
+            padding: 20px;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-    <h1>Hello, World!</h1>
+    <div id="app">
+        <header>
+            <div class="container">
+                <h1>{{ title }}</h1>
+            </div>
+        </header>
+
+        <div class="container">
+            <div v-for="service in services" :key="service.type" class="service">
+                <h2>{{ service.type }}</h2>
+                <p>{{ service.description }}</p>
+                <p><strong>Preis: {{ service.price }}</strong></p>
+            </div>
+
+            <div class="highlight">
+                <h2>{{ customHighlight }}</h2>
+                <p>{{ customDescription }}</p>
+            </div>
+        </div>
+
+        <div class="contact">
+            <h2>Kontakt</h2>
+            <p>{{ contactInfo }}</p>
+        </div>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                title: 'Professionelle Website-Erstellung',
+                services: [
+                    {
+                        type: 'Statische Websites',
+                        description: 'Perfekt für Kleinunternehmen und persönliche Webseiten. Schnell, effizient und kostengünstig.',
+                        price: 'Ab 500€'
+                    },
+                    {
+                        type: 'Dynamische Websites',
+                        description: 'Ideal für wachsende Unternehmen mit regelmäßigen Updates. Inklusive Content-Management-System.',
+                        price: 'Ab 1000€'
+                    }
+                ],
+                customHighlight: 'Maßgeschneiderte Lösungen',
+                customDescription: 'Wir erstellen Ihre Website genau nach Ihren Wünschen. Schnell, einfach und unkompliziert!',
+                contactInfo: 'Max Mustermann | Email: max@example.com | Tel: 0123 456789'
+            }
+        });
+    </script>
 </body>
 </html>
