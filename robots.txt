@@ -1,0 +1,3 @@
+CopyUser-agent: *
+Allow: /
+Sitemap: https://scalingweb.de/sitemap.xml
