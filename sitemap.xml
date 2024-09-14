@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://scalingweb.de/</loc>
+    <loc>https://webwai.de/</loc>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://scalingweb.de/#services</loc>
+    <loc>https://webwai.de/#services</loc>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://scalingweb.de/#portfolio</loc>
+    <loc>https://webwai.de/#portfolio</loc>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://scalingweb.de/#about</loc>
+    <loc>https://webwai.de/#about</loc>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://scalingweb.de/#security</loc>
+    <loc>https://webwai.de/#security</loc>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://scalingweb.de/#contact</loc>
+    <loc>https://webwai.de/#contact</loc>
     <priority>0.8</priority>
   </url>
 </urlset>
