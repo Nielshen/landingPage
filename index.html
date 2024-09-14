@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Innovative Web- und App-Lösungen von Niels Hensler</title>
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <style>
         :root {
             --primary-color: #4a90e2;
@@ -235,44 +235,43 @@
             font-size: 2em;
             margin-bottom: 20px;
         }
-        .portfolio {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            margin-top: 60px;
-        }
-        .portfolio-item {
-            flex-basis: calc(33.333% - 20px);
-            margin-bottom: 30px;
-            position: relative;
-            overflow: hidden;
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            transition: all 0.3s ease;
-        }
-        .portfolio-item img {
-            width: 100%;
-            height: auto;
-            transition: transform 0.3s ease;
-        }
-        .portfolio-item:hover {
-            transform: scale(1.05);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
-        }
-        .portfolio-description {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background-color: rgba(0,0,0,0.8);
-            color: var(--text-color);
-            padding: 20px;
-            transform: translateY(100%);
-            transition: transform 0.3s ease;
-        }
-        .portfolio-item:hover .portfolio-description {
-            transform: translateY(0);
-        }
+        .portfolio-container {
+    width: 100%;
+    overflow: hidden;
+    padding: 20px 0;
+}
+.portfolio {
+    display: flex;
+    gap: 20px;
+    transition: transform 0.5s ease;
+}
+.portfolio-item {
+    flex: 0 0 300px;
+    max-width: 300px;
+    position: relative;
+}
+.portfolio-item img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 10px;
+}
+.portfolio-description {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0,0,0,0.8);
+    color: var(--text-color);
+    padding: 10px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+}
+.portfolio-item:hover .portfolio-description {
+    transform: translateY(0);
+}
         .about-me {
             display: flex;
             align-items: center;
@@ -344,55 +343,28 @@
     </style>
 </head>
 <body>
-    <div id="app">
-        <header>
-            <div class="header-content">
-                <div class="logo">
-                    <img src="/api/placeholder/80/80" alt="Logo">
-                </div>
-                <nav>
-                    <ul>
-                        <li><a href="#services">Leistungen</a></li>
-                        <li><a href="#portfolio">Portfolio</a></li>
-                        <li><a href="#about">Über mich</a></li>
-                        <li><a href="#security">Sicherheit & Support</a></li>
-                        <li><a href="#contact">Kontakt</a></li>
-                    </ul>
-                </nav>
-            </div>
-        </header>
-
-        <section class="hero">
-            <div class="hero-content">
-                <h1>Innovative Web- & App-Lösungen für Ihren Erfolg</h1>
-                <p>{{ customDescription }}</p>
-                <a href="#contact" class="cta-button">Kostenloses Beratungsgespräch vereinbaren</a>
-            </div>
-        </section>
-
+   <div id="app">
+        <header-component></header-component>
+        <hero-section :custom-description="customDescription"></hero-section>
+        
         <div class="container">
-            <section id="services" class="services">
-                <div v-for="service in services" :key="service.type" class="service">
-                    <h2>{{ service.type }}</h2>
-                    <p class="service-description">{{ service.description }}</p>
-                    <ul class="feature-list">
-                        <li v-for="feature in service.features" :key="feature">{{ feature }}</li>
-                    </ul>
-                    <div class="price">{{ service.price }}</div>
-                    <a href="#contact" class="cta-button">Angebot anfordern</a>
-                </div>
-            </section>
+            <services-section :services="services"></services-section>
+            <highlight-section :custom-highlight="customHighlight"></highlight-section>
+            <portfolio-section :projects="portfolioProjects"></portfolio-section>
+            <about-section></about-section>
+            <security-section></security-section>
+        </div>
 
-            <section class="highlight">
-                <h2>{{ customHighlight }}</h2>
-                <p>Entdecken Sie, wie unsere maßgeschneiderten Lösungen Ihr Unternehmen auf die nächste Stufe heben können.</p>
-                <a href="#contact" class="cta-button">Jetzt durchstarten</a>
-            </section>
+        <contact-section :contact-info="contactInfo"></contact-section>
+        <footer-component></footer-component>
+    </div>
 
-            <section id="portfolio">
-                <h2>Unsere Erfolgsgeschichten</h2>
-                <div class="portfolio">
-                    <div v-for="project in portfolioProjects" :key="project.title" class="portfolio-item">
+    <template id="portfolio-section">
+        <section id="portfolio">
+            <h2>Unsere Erfolgsgeschichten</h2>
+            <div class="portfolio-container">
+                <div class="portfolio" ref="portfolioRef">
+                    <div v-for="project in projects" :key="project.title" class="portfolio-item">
                         <img :src="project.image" :alt="project.title">
                         <div class="portfolio-description">
                             <h3>{{ project.title }}</h3>
@@ -400,17 +372,177 @@
                         </div>
                     </div>
                 </div>
-            </section>
+            </div>
+        </section>
+    </template>
+    Impr
 
-            <section id="about" class="about-me">
-                <img src="/api/placeholder/200/200" alt="Niels Hensler">
-                <div class="about-me-text">
-                    <h2>Über mich</h2>
-                    <p>Ich bin Niels Hensler, ein leidenschaftlicher Webentwickler und App-Programmierer aus Radolfzell am Bodensee. Mit einem Bachelor of Science in Informatik von der HTWG Konstanz bringe ich fundiertes technisches Wissen und kreative Lösungsansätze in jedes Projekt ein.</p>
-                    <p>Meine Heimatstadt Radolfzell inspiriert mich täglich mit ihrer Schönheit und dem innovativen Geist der Region. Diese Inspiration fließt in jede meiner Entwicklungen ein, um einzigartige und effektive digitale Lösungen zu schaffen.</p>
+    <script>
+    const { createApp, ref } = Vue;
+
+    // Komponenten-Definitionen
+    const HeaderComponent = {
+        template: `
+            <header>
+                <div class="header-content">
+                    <div class="logo">
+                        <img src="assets/logoGelb.svg" alt="Logo">
+                    </div>
+                    <nav>
+                        <ul>
+                            <li><a href="#services">Leistungen</a></li>
+                            <li><a href="#portfolio">Portfolio</a></li>
+                            <li><a href="#about">Über mich</a></li>
+                            <li><a href="#security">Sicherheit & Support</a></li>
+                            <li><a href="#contact">Kontakt</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </header>
+        `
+    };
+
+    const HeroSection = {
+        props: ['customDescription'],
+        template: `
+            <section class="hero">
+                <div class="hero-content">
+                    <h1>Innovative Web- & App-Lösungen für Ihren Erfolg</h1>
+                    <p>{{ customDescription }}</p>
+                    <a href="#contact" class="cta-button">Kostenloses Beratungsgespräch vereinbaren</a>
                 </div>
             </section>
+        `
+    };
 
+    const ServicesSection = {
+        props: ['services'],
+        template: `
+            <section id="services" class="services">
+                <div v-for="service in services" :key="service.type" class="service">
+                    <h2>{{ service.type }}</h2>
+                    <p class="service-description">{{ service.description }}</p>
+                    <ul class="feature-list">
+                        <li v-for="feature in service.features" :key="feature">{{ feature }}</li>
+                    </ul>
+                    <div class="price" v-if="service.price">{{ service.price }}</div>
+                    <a href="#contact" class="cta-button">Angebot anfordern</a>
+                </div>
+            </section>
+        `
+    };
+
+    const HighlightSection = {
+        props: ['customHighlight'],
+        template: `
+            <section class="highlight">
+                <h2>{{ customHighlight }}</h2>
+                <p>Entdecken Sie, wie unsere maßgeschneiderten Lösungen Ihr Unternehmen auf die nächste Stufe heben können.</p>
+                <a href="#contact" class="cta-button">Jetzt durchstarten</a>
+            </section>
+        `
+    };
+
+    const PortfolioSection = {
+    props: ['projects'],
+    template: '#portfolio-section',
+    data() {
+        return {
+            isDragging: false,
+            startX: 0,
+            scrollLeft: 0,
+            autoScrollInterval: null,
+        };
+    },
+    mounted() {
+        this.setupDragScroll();
+        this.startAutoScroll();
+    },
+    methods: {
+        setupDragScroll() {
+            const slider = this.$refs.portfolioRef;
+            slider.addEventListener('mousedown', this.startDragging);
+            slider.addEventListener('mousemove', this.drag);
+            slider.addEventListener('mouseup', this.stopDragging);
+            slider.addEventListener('mouseleave', this.stopDragging);
+            
+            // Touch events
+            slider.addEventListener('touchstart', this.startDragging);
+            slider.addEventListener('touchmove', this.drag);
+            slider.addEventListener('touchend', this.stopDragging);
+        },
+        startDragging(e) {
+            if (e.type === 'mousedown' && e.button !== 0) return; // Only left mouse button
+            this.isDragging = true;
+            this.startX = e.type.includes('mouse') ? e.pageX : e.touches[0].pageX;
+            this.scrollLeft = this.getCurrentTranslateX();
+            this.stopAutoScroll();
+        },
+        drag(e) {
+            if (!this.isDragging) return;
+            e.preventDefault();
+            const x = e.type.includes('mouse') ? e.pageX : e.touches[0].pageX;
+            const walk = (this.startX - x) * 2;
+            this.setTranslateX(this.scrollLeft + walk);
+        },
+        stopDragging() {
+            this.isDragging = false;
+            this.startAutoScroll();
+        },
+        startAutoScroll() {
+            this.stopAutoScroll();
+            this.autoScrollInterval = setInterval(() => {
+                if (!this.isDragging) {
+                    this.scrollLeft += 1;
+                    if (this.scrollLeft >= this.$refs.portfolioRef.scrollWidth - this.$refs.portfolioRef.clientWidth) {
+                        this.scrollLeft = 0;
+                    }
+                    this.setTranslateX(this.scrollLeft);
+                }
+            }, 30);
+        },
+        stopAutoScroll() {
+            if (this.autoScrollInterval) {
+                clearInterval(this.autoScrollInterval);
+            }
+        },
+        getCurrentTranslateX() {
+            const style = window.getComputedStyle(this.$refs.portfolioRef);
+            const matrix = new DOMMatrixReadOnly(style.transform);
+            return -matrix.m41; // The translateX value
+        },
+        setTranslateX(x) {
+            this.$refs.portfolioRef.style.transform = `translateX(${-x}px)`;
+        }
+    },
+    beforeUnmount() {
+        this.stopAutoScroll();
+        const slider = this.$refs.portfolioRef;
+        slider.removeEventListener('mousedown', this.startDragging);
+        slider.removeEventListener('mousemove', this.drag);
+        slider.removeEventListener('mouseup', this.stopDragging);
+        slider.removeEventListener('mouseleave', this.stopDragging);
+        slider.removeEventListener('touchstart', this.startDragging);
+        slider.removeEventListener('touchmove', this.drag);
+        slider.removeEventListener('touchend', this.stopDragging);
+    }
+};
+
+const AboutSection = {
+    template: `
+        <section id="about" class="about-me">
+            <img src="assets/Niels.jpg" alt="Niels Hensler">
+            <div class="about-me-text">
+                <h2>Niels Hensler</h2>
+                <p>leidenschaftlicher Programmierer mit einem Bachelor of Science in Informatik von der HTWG Konstanz bringe ich fundiertes technisches Wissen und kreative Lösungsansätze in jedes Projekt ein.</p>
+            </div>
+        </section>
+    `
+};
+
+
+    const SecuritySection = {
+        template: `
             <section id="security" class="security-support">
                 <h2>Sicherheit, Wartung und Support</h2>
                 <p>Ihre digitale Präsenz verdient höchste Sicherheit und zuverlässigen Support. Deshalb bieten wir:</p>
@@ -423,38 +555,57 @@
                 </ul>
                 <p>Mit uns sind Sie und Ihre digitale Infrastruktur in sicheren Händen.</p>
             </section>
-        </div>
+        `
+    };
 
-        <section id="contact" class="contact">
-            <div class="container">
-                <h2>Lassen Sie uns Ihr Projekt starten</h2>
-                <p>{{ contactInfo }}</p>
-                <a href="mailto:kontakt@niels-hensler.de" class="cta-button">Jetzt Kontakt aufnehmen</a>
-            </div>
-        </section>
+    const ContactSection = {
+        props: ['contactInfo'],
+        template: `
+            <section id="contact" class="contact">
+                <div class="container">
+                    <h2>Lassen Sie uns Ihr Projekt starten</h2>
+                    <p>{{ contactInfo }}</p>
+                    <a href="mailto:kontakt@niels-hensler.de" class="cta-button">Jetzt Kontakt aufnehmen</a>
+                </div>
+            </section>
+        `
+    };
 
-        <footer>
-            <p>&copy; {{ new Date().getFullYear() }} Niels Hensler. Alle Rechte vorbehalten.</p>
-        </footer>
-    </div>
+    const FooterComponent = {
+        template: `
+            <footer>
+                <p>&copy; {{ new Date().getFullYear() }} Niels Hensler. Alle Rechte vorbehalten.</p>
+            </footer>
+        `
+    };
 
-    <script>
-        new Vue({
-            el: '#app',
-            data: {
-                services: [
-                    {
-                        type: 'Statische Website',
-                        description: 'Perfekt für Kleinunternehmen und persönliche Webseiten. Schnell, effizient und kostengünstig.',
-                        features: [
-                            'Responsive Design für alle Geräte',
-                            'SEO-Optimierung',
-                            'Bis zu 5 Unterseiten',
-                            'Kontaktformular',
-                            'Einmalige Contentpflege'
-                        ],
-                        price: 'Ab 500€'
-                    },
+    // Haupt-App-Komponente
+    const app = createApp({
+        components: {
+            HeaderComponent,
+            HeroSection,
+            ServicesSection,
+            HighlightSection,
+            PortfolioSection,
+            AboutSection,
+            SecuritySection,
+            ContactSection,
+            FooterComponent
+        },
+        setup() {
+            const services = ref([
+                {
+                    type: 'Statische Website',
+                    description: 'Perfekt für Kleinunternehmen und persönliche Webseiten. Schnell, effizient und kostengünstig.',
+                    features: [
+                        'Responsive Design für alle Geräte',
+                        'SEO-Optimierung',
+                        'Bis zu 5 Unterseiten',
+                        'Kontaktformular',
+                        'Einmalige Contentpflege'
+                    ],
+                    price: 'Ab 500€'
+                },
                     {
                         type: 'Dynamische Website + Backend lösung',
                         description: 'Ideal für wachsende Unternehmen mit regelmäßigen Updates und komplexeren Anforderungen.',
@@ -512,29 +663,54 @@
                             'Langfristige Wartung und Support'
                         ],
                     }
-                ],
-                customHighlight: 'Ihre Vision, unsere Expertise – gemeinsam zum digitalen Erfolg',
-                customDescription: 'Wir entwickeln nicht nur Websites und Apps, wir erschaffen digitale Erlebnisse, die Ihr Unternehmen voranbringen. Mit modernster Technologie, innovativem Design und einem tiefen Verständnis für Ihre Bedürfnisse machen wir Ihre digitale Vision Wirklichkeit.',
-                contactInfo: 'Niels Hensler | E-Mail: kontakt@niels-hensler.de | Tel: +49 7732 1234567 | Radolfzell am Bodensee',
-                portfolioProjects: [
+                ]);
+                const customHighlight = ref('Ihre Vision, unsere Expertise – gemeinsam zum digitalen Erfolg');
+                const customDescription = ref('Wir entwickeln nicht nur Websites und Apps, wir erschaffen digitale Erlebnisse, die Ihr Unternehmen voranbringen. Mit modernster Technologie, innovativem Design und einem tiefen Verständnis für Ihre Bedürfnisse machen wir Ihre digitale Vision Wirklichkeit.');
+                const contactInfo = ref('Niels Hensler | E-Mail: kontakt@niels-hensler.de | Tel: +49 7732 1234567 | Radolfzell am Bodensee');
+                const portfolioProjects = ref([
                     {
-                        title: 'RegioMarkt Online',
-                        description: 'E-Commerce-Plattform für regionale Produkte mit über 100 lokalen Händlern',
-                        image: '/api/placeholder/400/300'
+                        title: 'AdventureAssistant',
+                        description: 'KI-gestützte Reiseplanungs-App für unvergessliche Abenteuer',
+                        image: 'assets/CaptureAdventureAssistant.png'
                     },
                     {
-                        title: 'BodenseeGo App',
-                        description: 'Tourismus-App für die Bodenseeregion mit interaktiver Karte und AR-Funktionen',
-                        image: '/api/placeholder/400/300'
+                        title: 'AdventureAssistant',
+                        description: 'KI-gestützte Reiseplanungs-App für unvergessliche Abenteuer',
+                        image: 'assets/CaptureAdventureAssistant.png'
                     },
                     {
-                        title: 'SmartFactory Dashboard',
-                        description: 'Echtzeit-Monitoring-System für Produktionsanlagen eines führenden Automobilzulieferers',
-                        image: '/api/placeholder/400/300'
+                        title: 'AdventureAssistant',
+                        description: 'KI-gestützte Reiseplanungs-App für unvergessliche Abenteuer',
+                        image: 'assets/CaptureAdventureAssistant.png'
+                    },
+                    {
+                        title: 'AdventureAssistant',
+                        description: 'KI-gestützte Reiseplanungs-App für unvergessliche Abenteuer',
+                        image: 'assets/CaptureAdventureAssistant.png'
+                    },
+                    {
+                        title: 'AdventureAssistant',
+                        description: 'KI-gestützte Reiseplanungs-App für unvergessliche Abenteuer',
+                        image: 'assets/CaptureAdventureAssistant.png'
+                    },
+                    {
+                        title: 'AdventureAssistant',
+                        description: 'KI-gestützte Reiseplanungs-App für unvergessliche Abenteuer',
+                        image: 'assets/CaptureAdventureAssistant.png'
                     }
-                ]
+                ]);
+
+                return {
+                    services,
+                    customHighlight,
+                    customDescription,
+                    contactInfo,
+                    portfolioProjects
+                };
             }
         });
+
+        app.mount('#app');
     </script>
 </body>
 </html>
