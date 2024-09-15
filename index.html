@@ -51,25 +51,44 @@
                 <div class="logo" @click="scrollToTop">
                     <img src="assets/logo.svg" alt="Logo" style="cursor: pointer;">
                 </div>
-                <nav>
+                <button class="menu-toggle" @click="toggleMenu" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <nav :class="{ active: isMenuActive }">
                     <ul>
-                        <li><a href="#services">Leistungen</a></li>
-                        <li><a href="#portfolio">Portfolio</a></li>
-                        <li><a href="#about">Über mich</a></li>
-                        <li><a href="#security">Sicherheit & Support</a></li>
-                        <li><a href="#contact">Kontakt</a></li>
+                        <li><a href="#services" @click="closeMenu">Leistungen</a></li>
+                        <li><a href="#portfolio" @click="closeMenu">Portfolio</a></li>
+                        <li><a href="#about" @click="closeMenu">Über mich</a></li>
+                        <li><a href="#security" @click="closeMenu">Sicherheit & Support</a></li>
+                        <li><a href="#contact" @click="closeMenu">Kontakt</a></li>
                     </ul>
                 </nav>
             </div>
         </header>
     `,
+    data() {
+        return {
+            isMenuActive: false
+        };
+    },
     methods: {
         scrollToTop() {
             window.scrollTo({
                 top: 0,
                 behavior: 'smooth'
             });
+        },
+        toggleMenu() {
+            this.isMenuActive = !this.isMenuActive;
+        },
+        closeMenu() {
+            this.isMenuActive = false;
         }
+    },
+    mounted() {
+        // Wenn Sie zusätzliche Logik beim Mounting der Komponente benötigen
     }
 };
 
