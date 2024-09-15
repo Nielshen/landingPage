@@ -49,18 +49,15 @@
             padding: 0 20px;
         }
         .logo {
-            width: 80px;
-            height: 80px;
-            background-color: var(--card-background);
-            border-radius: 50%;
+            width: 150px;
+            height: 150px; 
             display: flex;
             justify-content: center;
             align-items: center;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
         }
         .logo img {
-            max-width: 60%;
-            max-height: 60%;
+            max-width: 100%;
+            max-height: 100%;
         }
         nav ul {
             list-style-type: none;
@@ -386,7 +383,7 @@
             <header>
                 <div class="header-content">
                     <div class="logo">
-                        <img src="assets/logoGelb.svg" alt="Logo">
+                        <img src="assets/logo.svg" alt="Logo">
                     </div>
                     <nav>
                         <ul>
@@ -565,7 +562,7 @@ const AboutSection = {
                 <div class="container">
                     <h2>Lassen Sie uns Ihr Projekt starten</h2>
                     <p>{{ contactInfo }}</p>
-                    <a href="mailto:kontakt@niels-hensler.de" class="cta-button">Jetzt Kontakt aufnehmen</a>
+                    <a href="mailto:info@webwai.de" class="cta-button">Jetzt Kontakt aufnehmen</a>
                 </div>
             </section>
         `
@@ -604,7 +601,6 @@ const AboutSection = {
                         'Kontaktformular',
                         'Einmalige Contentpflege'
                     ],
-                    price: 'Ab 500€'
                 },
                     {
                         type: 'Dynamische Website + Backend lösung',
@@ -666,7 +662,7 @@ const AboutSection = {
                 ]);
                 const customHighlight = ref('Ihre Vision, unsere Expertise – gemeinsam zum digitalen Erfolg');
                 const customDescription = ref('Wir entwickeln nicht nur Websites und Apps, wir erschaffen digitale Erlebnisse, die Ihr Unternehmen voranbringen. Mit modernster Technologie, innovativem Design und einem tiefen Verständnis für Ihre Bedürfnisse machen wir Ihre digitale Vision Wirklichkeit.');
-                const contactInfo = ref('Niels Hensler | E-Mail: kontakt@niels-hensler.de | Tel: +49 7732 1234567 | Radolfzell am Bodensee');
+                const contactInfo = ref('Niels Hensler | E-Mail: info@webwai.de | 78224 Überlingen am Ried');
                 const portfolioProjects = ref([
                     {
                         title: 'AdventureAssistant',
