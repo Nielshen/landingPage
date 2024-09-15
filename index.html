@@ -75,6 +75,11 @@
                         <li><a href="https://webwai.de/#security">Sicherheit & Support</a></li>
                         <li><a href="https://webwai.de/#contact">Kontakt</a></li>
                     </ul>
+                    <ul v-if="isMenuOpen" class="legal-menu">
+                        <li><a href="https://webwai.de/legal/impressum">Impressum</a></li>
+                        <li><a href="https://webwai.de/legal/datenschutz">Datenschutz</a></li>
+                        <li><a href="https://webwai.de/legal/agb">AGBs</a></li>
+                    </ul>
                 </nav>
             </div>
         </header>
@@ -137,89 +142,98 @@
 
     const PortfolioSection = {
     props: ['projects'],
-    template: '#portfolio-section',
+    template: `
+        <section id="portfolio">
+            <h2>Unsere Erfolgsgeschichten</h2>
+            <div class="portfolio-container" 
+                 ref="container" 
+                 @mousedown="startDrag" 
+                 @mousemove="drag"
+                 @mouseup="stopDrag"
+                 @mouseleave="stopDrag"
+                 @touchstart="startDrag"
+                 @touchmove="drag"
+                 @touchend="stopDrag">
+                <div class="portfolio" ref="portfolioRef">
+                    <div v-for="project in projects" :key="project.title" class="portfolio-item">
+                        <img :src="project.image" :alt="project.title">
+                        <div class="portfolio-description">
+                            <h3>{{ project.title }}</h3>
+                            <p>{{ project.description }}</p>
+                            <a :href="project.link" class="portfolio-button">Mehr erfahren</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    `,
     data() {
         return {
             isDragging: false,
             startX: 0,
             scrollLeft: 0,
-            autoScrollInterval: null,
+            animationId: null,
+            lastTime: 0,
+            speed: 0.5, // Pixels per millisecond
         };
     },
     mounted() {
-        this.setupDragScroll();
+        this.container = this.$refs.container;
         this.startAutoScroll();
     },
     methods: {
-        setupDragScroll() {
-            const slider = this.$refs.portfolioRef;
-            slider.addEventListener('mousedown', this.startDragging);
-            slider.addEventListener('mousemove', this.drag);
-            slider.addEventListener('mouseup', this.stopDragging);
-            slider.addEventListener('mouseleave', this.stopDragging);
-            
-            // Touch events
-            slider.addEventListener('touchstart', this.startDragging);
-            slider.addEventListener('touchmove', this.drag);
-            slider.addEventListener('touchend', this.stopDragging);
-        },
-        startDragging(e) {
-            if (e.type === 'mousedown' && e.button !== 0) return; // Only left mouse button
+        startDrag(e) {
+            if (e.type.includes('mouse') && e.button !== 0) return; // Nur linke Maustaste
             this.isDragging = true;
             this.startX = e.type.includes('mouse') ? e.pageX : e.touches[0].pageX;
-            this.scrollLeft = this.getCurrentTranslateX();
+            this.scrollLeft = this.container.scrollLeft;
             this.stopAutoScroll();
+            this.container.style.cursor = 'grabbing';
+            this.container.style.userSelect = 'none';
         },
         drag(e) {
             if (!this.isDragging) return;
             e.preventDefault();
             const x = e.type.includes('mouse') ? e.pageX : e.touches[0].pageX;
             const walk = (this.startX - x) * 2;
-            this.setTranslateX(this.scrollLeft + walk);
+            this.container.scrollLeft = this.scrollLeft + walk;
         },
-        stopDragging() {
+        stopDrag() {
+            if (!this.isDragging) return;
             this.isDragging = false;
+            this.container.style.cursor = 'grab';
+            this.container.style.removeProperty('user-select');
             this.startAutoScroll();
         },
         startAutoScroll() {
-            this.stopAutoScroll();
-            this.autoScrollInterval = setInterval(() => {
-                if (!this.isDragging) {
-                    this.scrollLeft += 1;
-                    if (this.scrollLeft >= this.$refs.portfolioRef.scrollWidth - this.$refs.portfolioRef.clientWidth) {
-                        this.scrollLeft = 0;
-                    }
-                    this.setTranslateX(this.scrollLeft);
-                }
-            }, 30);
+            this.lastTime = performance.now();
+            this.animationId = requestAnimationFrame(this.autoScroll);
+        },
+        autoScroll(currentTime) {
+            if (this.isDragging) return;
+
+            const deltaTime = currentTime - this.lastTime;
+            this.lastTime = currentTime;
+
+            this.container.scrollLeft += this.speed * deltaTime;
+
+            if (this.container.scrollLeft >= this.container.scrollWidth - this.container.clientWidth) {
+                this.container.scrollLeft = 0;
+            }
+
+            this.animationId = requestAnimationFrame(this.autoScroll);
         },
         stopAutoScroll() {
-            if (this.autoScrollInterval) {
-                clearInterval(this.autoScrollInterval);
+            if (this.animationId) {
+                cancelAnimationFrame(this.animationId);
+                this.animationId = null;
             }
-        },
-        getCurrentTranslateX() {
-            const style = window.getComputedStyle(this.$refs.portfolioRef);
-            const matrix = new DOMMatrixReadOnly(style.transform);
-            return -matrix.m41; // The translateX value
-        },
-        setTranslateX(x) {
-            this.$refs.portfolioRef.style.transform = `translateX(${-x}px)`;
         }
     },
     beforeUnmount() {
         this.stopAutoScroll();
-        const slider = this.$refs.portfolioRef;
-        slider.removeEventListener('mousedown', this.startDragging);
-        slider.removeEventListener('mousemove', this.drag);
-        slider.removeEventListener('mouseup', this.stopDragging);
-        slider.removeEventListener('mouseleave', this.stopDragging);
-        slider.removeEventListener('touchstart', this.startDragging);
-        slider.removeEventListener('touchmove', this.drag);
-        slider.removeEventListener('touchend', this.stopDragging);
     }
 };
-
 const AboutSection = {
     template: `
         <section id="about" class="about-me">
@@ -369,47 +383,56 @@ const AboutSection = {
                     {
                         title: 'AdventureAssistant',
                         description: 'KI-gestützte Reiseplanungs-App für unvergessliche Abenteuer',
-                        image: 'assets/CaptureAdventureAssistant.png'
+                        image: 'assets/CaptureAdventureAssistant.png',
+                        link: 'https://www.adventureassistant.de'
                     },
                     {
                         title: 'AdventureAssistant',
                         description: 'KI-gestützte Reiseplanungs-App für unvergessliche Abenteuer',
-                        image: 'assets/CaptureAdventureAssistant.png'
+                        image: 'assets/CaptureAdventureAssistant.png',
+                        link: 'https://www.adventureassistant.de'
                     },
                     {
                         title: 'AdventureAssistant',
                         description: 'KI-gestützte Reiseplanungs-App für unvergessliche Abenteuer',
-                        image: 'assets/CaptureAdventureAssistant.png'
+                        image: 'assets/CaptureAdventureAssistant.png',
+                        link: 'https://www.adventureassistant.de'
                     },
                     {
                         title: 'AdventureAssistant',
                         description: 'KI-gestützte Reiseplanungs-App für unvergessliche Abenteuer',
-                        image: 'assets/CaptureAdventureAssistant.png'
+                        image: 'assets/CaptureAdventureAssistant.png',
+                        link: 'https://www.adventureassistant.de'
                     },
                     {
                         title: 'AdventureAssistant',
                         description: 'KI-gestützte Reiseplanungs-App für unvergessliche Abenteuer',
-                        image: 'assets/CaptureAdventureAssistant.png'
+                        image: 'assets/CaptureAdventureAssistant.png',
+                        link: 'https://www.adventureassistant.de'
                     },
                     {
                         title: 'AdventureAssistant',
                         description: 'KI-gestützte Reiseplanungs-App für unvergessliche Abenteuer',
-                        image: 'assets/CaptureAdventureAssistant.png'
+                        image: 'assets/CaptureAdventureAssistant.png',
+                        link: 'https://www.adventureassistant.de'
                     },
                     {
                         title: 'AdventureAssistant',
                         description: 'KI-gestützte Reiseplanungs-App für unvergessliche Abenteuer',
-                        image: 'assets/CaptureAdventureAssistant.png'
+                        image: 'assets/CaptureAdventureAssistant.png',
+                        link: 'https://www.adventureassistant.de'
                     },
                     {
                         title: 'AdventureAssistant',
                         description: 'KI-gestützte Reiseplanungs-App für unvergessliche Abenteuer',
-                        image: 'assets/CaptureAdventureAssistant.png'
+                        image: 'assets/CaptureAdventureAssistant.png',
+                        link: 'https://www.adventureassistant.de'
                     },
                     {
                         title: 'AdventureAssistant',
                         description: 'KI-gestützte Reiseplanungs-App für unvergessliche Abenteuer',
-                        image: 'assets/CaptureAdventureAssistant.png'
+                        image: 'assets/CaptureAdventureAssistant.png',
+                        link: 'https://www.adventureassistant.de'
                     }
                 ]);
 

@@ -359,17 +359,28 @@ nav ul li a:hover {
     width: 100%;
     overflow: hidden;
     padding: 20px 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    cursor: grab;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.portfolio-container::-webkit-scrollbar {
+    display: none; /* Versteckt die Scrollbar in Chrome, Safari und Opera */
 }
 
 .portfolio {
-    display: flex;
+    display: inline-flex;
     gap: 20px;
     transition: transform 0.5s ease;
 }
 
 .portfolio-item {
-    flex: 0 0 300px;
-    max-width: 300px;
+    flex: 0 0 400px;
+    max-width: 400px;
     position: relative;
     opacity: 0;
     transform: translateX(-30px);
@@ -404,6 +415,24 @@ nav ul li a:hover {
 
 .portfolio-item:hover .portfolio-description {
     transform: translateY(0);
+}
+
+.portfolio-button {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: var(--secondary-color);
+    color: var(--background-color);
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+.portfolio-button:hover {
+    background-color: #45b767;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
 
 .highlight.animate {
