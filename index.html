@@ -45,25 +45,33 @@
 
     // Komponenten-Definitionen
     const HeaderComponent = {
-        template: `
-            <header>
-                <div class="header-content">
-                    <div class="logo">
-                        <img src="assets/logo.svg" alt="Logo">
-                    </div>
-                    <nav>
-                        <ul>
-                            <li><a href="#services">Leistungen</a></li>
-                            <li><a href="#portfolio">Portfolio</a></li>
-                            <li><a href="#about">Über mich</a></li>
-                            <li><a href="#security">Sicherheit & Support</a></li>
-                            <li><a href="#contact">Kontakt</a></li>
-                        </ul>
-                    </nav>
+    template: `
+        <header>
+            <div class="header-content">
+                <div class="logo" @click="scrollToTop">
+                    <img src="assets/logo.svg" alt="Logo" style="cursor: pointer;">
                 </div>
-            </header>
-        `
-    };
+                <nav>
+                    <ul>
+                        <li><a href="#services">Leistungen</a></li>
+                        <li><a href="#portfolio">Portfolio</a></li>
+                        <li><a href="#about">Über mich</a></li>
+                        <li><a href="#security">Sicherheit & Support</a></li>
+                        <li><a href="#contact">Kontakt</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+    `,
+    methods: {
+        scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+    }
+};
 
     const HeroSection = {
         props: ['customDescription'],

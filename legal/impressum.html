@@ -6,8 +6,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Impressum - Niels Hensler</title>
     <link rel="stylesheet" href="../assets/styles.css">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <style>
+        .legal-page {
+            margin-top: 200px; /* Höhe des Headers*/
+        }
+    </style>
 </head>
 <body>
+    <div id="app">
+        <header-component></header-component>
+        <div class="container">
     <div class="legal-page">
         <h1>Impressum</h1>
         <p><strong>Angaben gemäß § 5 TMG:</strong></p>
@@ -27,5 +36,42 @@
             78224 Überlingen am Ried
         </p>
     </div>
-</body>
-</html>
+    <script>
+        const { createApp } = Vue;
+    
+        const HeaderComponent = {
+            template: `
+                <header>
+                    <div class="header-content">
+                        <div class="logo" @click="navigateToHome">
+                            <img src="../assets/logo.svg" alt="Logo" style="cursor: pointer;">
+                        </div>
+                        <nav>
+                            <ul>
+                                <li><a href="https://webwai.de/#services">Leistungen</a></li>
+                                <li><a href="https://webwai.de/#portfolio">Portfolio</a></li>
+                                <li><a href="https://webwai.de/#about">Über mich</a></li>
+                                <li><a href="https://webwai.de/#security">Sicherheit & Support</a></li>
+                                <li><a href="https://webwai.de/#contact">Kontakt</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                </header>
+            `,
+            methods: {
+                navigateToHome() {
+                    window.location.href = 'https://webwai.de';
+                }
+            }
+        };
+    
+        const app = createApp({
+            components: {
+                HeaderComponent
+            }
+        });
+    
+        app.mount('#app');
+        </script>
+    </body>
+    </html>

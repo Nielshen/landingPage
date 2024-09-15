@@ -1,4 +1,4 @@
-<!-- datenschutz.html -->
+<!-- datenschutz.html --> 
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -6,9 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Datenschutzerklärung - Niels Hensler</title>
     <link rel="stylesheet" href="../assets/styles.css">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <style>
+        .legal-page {
+            margin-top: 200px; /* Höhe des Headers*/
+        }
+    </style>
 </head>
 <body>
-    <div class="legal-page">
+    <div id="app">
+        <header-component></header-component>
+        <div class="container">
+        <div class="legal-page">
         <h1>Datenschutzerklärung</h1>
         <p>Der Schutz Ihrer persönlichen Daten ist uns ein besonderes Anliegen. Wir verarbeiten Ihre Daten daher ausschließlich auf Grundlage der gesetzlichen Bestimmungen (DSGVO, TKG 2003).</p>
         
@@ -31,5 +40,42 @@
             E-Mail: info@webwai.de
         </p>
     </div>
-</body>
-</html>
+    <script>
+        const { createApp } = Vue;
+    
+        const HeaderComponent = {
+            template: `
+                <header>
+                    <div class="header-content">
+                        <div class="logo" @click="navigateToHome">
+                            <img src="../assets/logo.svg" alt="Logo" style="cursor: pointer;">
+                        </div>
+                        <nav>
+                            <ul>
+                                <li><a href="https://webwai.de/#services">Leistungen</a></li>
+                                <li><a href="https://webwai.de/#portfolio">Portfolio</a></li>
+                                <li><a href="https://webwai.de/#about">Über mich</a></li>
+                                <li><a href="https://webwai.de/#security">Sicherheit & Support</a></li>
+                                <li><a href="https://webwai.de/#contact">Kontakt</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                </header>
+            `,
+            methods: {
+                navigateToHome() {
+                    window.location.href = 'https://webwai.de';
+                }
+            }
+        };
+    
+        const app = createApp({
+            components: {
+                HeaderComponent
+            }
+        });
+    
+        app.mount('#app');
+        </script>
+    </body>
+    </html>
