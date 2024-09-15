@@ -60,6 +60,51 @@ header {
     max-height: 100%;
 }
 
+/* Neue Styles für mobile Anpassungen */
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .logo {
+        width: 100px;
+        height: 100px;
+        margin-bottom: 10px;
+    }
+
+    nav ul {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    nav ul li {
+        margin: 10px 0;
+    }
+
+    /* Zusätzlicher Platz für den fixierten Header */
+    body {
+        padding-top: 180px;
+    }
+
+    /* Anpassung der Hero-Sektion */
+    .hero {
+        padding-top: 50px;
+    }
+}
+
+/* Für noch kleinere Bildschirme */
+@media (max-width: 480px) {
+    .logo {
+        width: 80px;
+        height: 80px;
+    }
+
+    body {
+        padding-top: 160px;
+    }
+}
+
 nav ul {
     list-style-type: none;
     padding: 0;
