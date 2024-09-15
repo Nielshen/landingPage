@@ -597,3 +597,56 @@ footer nav a:hover {
         margin-bottom: 20px;
     }
 }
+
+/* Scrollbar-Anpassungen */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--secondary-color, #888);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: var(--secondary-color, #666);
+}
+
+/* Hide scrollbar when not scrolling */
+body {
+    scrollbar-width: thin;
+    scrollbar-color: var(--secondary-color, #888) transparent;
+}
+
+body::-webkit-scrollbar-thumb {
+    transition: opacity 0.3s ease-out;
+    opacity: 0;
+}
+
+body:hover::-webkit-scrollbar-thumb,
+body:focus::-webkit-scrollbar-thumb,
+body:active::-webkit-scrollbar-thumb {
+    opacity: 1;
+}
+
+/* Firefox */
+@-moz-document url-prefix() {
+    body {
+        scrollbar-width: none;
+    }
+    
+    body:hover,
+    body:focus,
+    body:active {
+        scrollbar-width: thin;
+    }
+}
+
+/* For IE and Edge */
+body {
+    -ms-overflow-style: -ms-autohiding-scrollbar;
+}
