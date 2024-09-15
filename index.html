@@ -8,14 +8,25 @@
     <link rel="stylesheet" href="assets/styles.css">
 </head>
 <body>
-   <div id="app">
+    <div id="app">
         <header-component></header-component>
         <hero-section :custom-description="customDescription"></hero-section>
         
+        <div class="section-spacer"></div>
+        
         <div class="container">
             <services-section :services="services"></services-section>
-            <highlight-section :custom-highlight="customHighlight"></highlight-section>
+            
+            <div class="section-spacer"></div>
+            
             <portfolio-section :projects="portfolioProjects"></portfolio-section>
+            
+            <div class="section-spacer"></div>
+            
+            <highlight-section :custom-highlight="customHighlight"></highlight-section>
+            
+            <div class="section-spacer"></div>
+            
             <about-section></about-section>
             <security-section></security-section>
         </div>
@@ -48,21 +59,21 @@
     template: `
         <header>
             <div class="header-content">
-                <div class="logo" @click="scrollToTop">
-                    <img src="assets/logo.svg" alt="Logo" style="cursor: pointer;">
+                <div class="logo" @click="navigateToHome">
+                    <img src=" assets/logo.svg" alt="Logo" style="cursor: pointer;">
                 </div>
-                <button class="menu-toggle" @click="toggleMenu" aria-label="Toggle menu">
+                <button class="menu-toggle" @click="toggleMenu" :class="{ 'active': isMenuOpen }">
                     <span></span>
                     <span></span>
                     <span></span>
                 </button>
-                <nav :class="{ active: isMenuActive }">
+                <nav :class="{ 'active': isMenuOpen }">
                     <ul>
-                        <li><a href="#services" @click="closeMenu">Leistungen</a></li>
-                        <li><a href="#portfolio" @click="closeMenu">Portfolio</a></li>
-                        <li><a href="#about" @click="closeMenu">Über mich</a></li>
-                        <li><a href="#security" @click="closeMenu">Sicherheit & Support</a></li>
-                        <li><a href="#contact" @click="closeMenu">Kontakt</a></li>
+                        <li><a href="https://webwai.de/#services">Leistungen</a></li>
+                        <li><a href="https://webwai.de/#portfolio">Portfolio</a></li>
+                        <li><a href="https://webwai.de/#about">Über mich</a></li>
+                        <li><a href="https://webwai.de/#security">Sicherheit & Support</a></li>
+                        <li><a href="https://webwai.de/#contact">Kontakt</a></li>
                     </ul>
                 </nav>
             </div>
@@ -70,25 +81,16 @@
     `,
     data() {
         return {
-            isMenuActive: false
+            isMenuOpen: false
         };
     },
     methods: {
-        scrollToTop() {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
+        navigateToHome() {
+            window.location.href = 'https://webwai.de';
         },
         toggleMenu() {
-            this.isMenuActive = !this.isMenuActive;
-        },
-        closeMenu() {
-            this.isMenuActive = false;
+            this.isMenuOpen = !this.isMenuOpen;
         }
-    },
-    mounted() {
-        // Wenn Sie zusätzliche Logik beim Mounting der Komponente benötigen
     }
 };
 
@@ -421,7 +423,54 @@ const AboutSection = {
             }
         });
 
-        app.mount('#app');
+        function setupIntersectionObserver() {
+        const options = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate');
+                    if (entry.target.classList.contains('services')) {
+                        animateServices();
+                    } else if (entry.target.classList.contains('portfolio-container')) {
+                        animatePortfolio();
+                    }
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, options);
+
+        const sections = document.querySelectorAll('.services, .portfolio-container, .highlight, .about-me');
+        sections.forEach(section => {
+            observer.observe(section);
+        });
+    }
+
+    function animateServices() {
+        const services = document.querySelectorAll('.service');
+        services.forEach((service, index) => {
+            setTimeout(() => {
+                service.classList.add('animate');
+            }, index * 200);
+        });
+    }
+
+    function animatePortfolio() {
+        const portfolioItems = document.querySelectorAll('.portfolio-item');
+        portfolioItems.forEach((item, index) => {
+            setTimeout(() => {
+                item.classList.add('animate');
+            }, index * 100);
+        });
+    }
+
+    // Call this function after Vue has mounted the app
+    app.mount('#app');
+    setTimeout(setupIntersectionObserver, 0);
     </script>
 </body>
 </html>
