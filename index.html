@@ -21,20 +21,6 @@
         <link rel="icon" href="/favicon.ico" type="image/x-icon">
         <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
         
-        <!-- Open Graph / Facebook -->
-        <meta property="og:type" content="website">
-        <meta property="og:url" content="https://webwai.de/">
-        <meta property="og:title" content="Innovative Web- und App-Lösungen | KI & Cloud">
-        <meta property="og:description" content="Maßgeschneiderte digitale Lösungen: Webdesign, App-Entwicklung, KI-Integration, Cloud-Skalierung und IT-Support in Radolfzell, Konstanz, Singen.">
-        <meta property="og:image" content="https://webwai.de/assets/og-image.jpg">
-        
-        <!-- Twitter -->
-        <meta property="twitter:card" content="summary_large_image">
-        <meta property="twitter:url" content="https://webwai.de/">
-        <meta property="twitter:title" content="Innovative Web- und App-Lösungen | KI & Cloud">
-        <meta property="twitter:description" content="Maßgeschneiderte digitale Lösungen: Webdesign, App-Entwicklung, KI-Integration, Cloud-Skalierung und IT-Support in Radolfzell, Konstanz, Singen.">
-        <meta property="twitter:image" content="https://webwai.de/assets/twitter-image.jpg">
-        
         <!-- Canonical URL -->
         <link rel="canonical" href="https://webwai.de/">
         
@@ -140,15 +126,16 @@
         <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
         <link rel="stylesheet" href="assets/styles.css">
     </head>
-<body>
-    <div id="app">
-        <header-component></header-component>
-        <hero-section :custom-description="customDescription"></hero-section>
-        
-        <div class="section-spacer"></div>
-        
-        <div class="container">
-            <services-section :services="services"></services-section>
+    <body>
+        <div id="app">
+            <header-component></header-component>
+            <hero-section :custom-description="customDescription"></hero-section>
+            
+            <div class="section-spacer"></div>
+            
+            <div class="container">
+                <services-section :services="services"></services-section>
+            </div>
             
             <div class="section-spacer"></div>
             
@@ -156,34 +143,36 @@
             
             <div class="section-spacer"></div>
             
-            <highlight-section :custom-highlight="customHighlight"></highlight-section>
-            
-            <div class="section-spacer"></div>
-            
-            <about-section></about-section>
-            <security-section></security-section>
+            <div class="container">
+                <highlight-section :custom-highlight="customHighlight"></highlight-section>
+                
+                <div class="section-spacer"></div>
+                
+                <about-section></about-section>
+                <security-section></security-section>
+            </div>
+    
+            <contact-section :contact-info="contactInfo"></contact-section>
+            <footer-component></footer-component>
         </div>
-
-        <contact-section :contact-info="contactInfo"></contact-section>
-        <footer-component></footer-component>
-    </div>
 
     <template id="portfolio-section">
         <section id="portfolio">
-            <h2>Unsere Erfolgsgeschichten</h2>
-            <div class="portfolio-container">
-                <div class="portfolio" ref="portfolioRef">
-                    <div v-for="project in projects" :key="project.title" class="portfolio-item">
-                        <img :src="project.image" :alt="project.title">
-                        <div class="portfolio-description">
-                            <h3>{{ project.title }}</h3>
-                            <p>{{ project.description }}</p>
-                        </div>
-                    </div>
+          <h2>Unsere Erfolgsgeschichten</h2>
+          <div class="portfolio-container" ref="container" @mousedown="startDrag" @mousemove="drag" @mouseup="stopDrag" @mouseleave="stopDrag" @touchstart="startDrag" @touchmove="drag" @touchend="stopDrag">
+            <div class="portfolio" ref="portfolioRef">
+              <div v-for="project in displayedProjects" :key="project.title" class="portfolio-item">
+                <img :src="project.image" :alt="project.title">
+                <div class="portfolio-description">
+                  <h3>{{ project.title }}</h3>
+                  <p>{{ project.description }}</p>
+                  <a :href="project.link" class="portfolio-button">Mehr erfahren</a>
                 </div>
+              </div>
             </div>
+          </div>
         </section>
-    </template>
+      </template>
     <script>
     const { createApp, ref } = Vue;
 
@@ -274,98 +263,126 @@
     };
 
     const PortfolioSection = {
-    props: ['projects'],
-    template: `
-        <section id="portfolio">
-            <h2>Unsere Erfolgsgeschichten</h2>
-            <div class="portfolio-container" 
-                 ref="container" 
-                 @mousedown="startDrag" 
-                 @mousemove="drag"
-                 @mouseup="stopDrag"
-                 @mouseleave="stopDrag"
-                 @touchstart="startDrag"
-                 @touchmove="drag"
-                 @touchend="stopDrag">
-                <div class="portfolio" ref="portfolioRef">
-                    <div v-for="project in projects" :key="project.title" class="portfolio-item">
-                        <img :src="project.image" :alt="project.title">
-                        <div class="portfolio-description">
-                            <h3>{{ project.title }}</h3>
-                            <p>{{ project.description }}</p>
-                            <a :href="project.link" class="portfolio-button">Mehr erfahren</a>
-                        </div>
-                    </div>
-                </div>
+  props: ['projects'],
+  template: `
+    <section id="portfolio">
+      <h2>Unsere Erfolgsgeschichten</h2>
+      <div class="portfolio-container" ref="container" @mousedown="startDrag" @mousemove="drag" @mouseup="stopDrag" @mouseleave="stopDrag" @touchstart="startDrag" @touchmove="drag" @touchend="stopDrag">
+        <div class="portfolio" ref="portfolioRef">
+          <div v-for="project in displayedProjects" :key="project.id" class="portfolio-item">
+            <img :src="project.image" :alt="project.title">
+            <div class="portfolio-description">
+              <h3>{{ project.title }}</h3>
+              <p>{{ project.description }}</p>
+              <a :href="project.link" class="portfolio-button">Mehr erfahren</a>
             </div>
-        </section>
-    `,
-    data() {
-        return {
-            isDragging: false,
-            startX: 0,
-            scrollLeft: 0,
-            animationId: null,
-            lastTime: 0,
-            speed: 0.2, // Pixels per millisecond
-        };
+          </div>
+        </div>
+      </div>
+    </section>
+  `,
+  data() {
+    return {
+      isDragging: false,
+      startX: 0,
+      scrollLeft: 0,
+      animationId: null,
+      lastTime: 0,
+      speed: 0.2, // Pixels per millisecond
+      displayedProjects: [],
+      projectCounter: 0,
+    };
+  },
+  mounted() {
+    this.container = this.$refs.container;
+    this.initializeDisplayedProjects();
+    this.startAutoScroll();
+  },
+  methods: {
+    initializeDisplayedProjects() {
+      // Initialize with three sets of projects
+      this.displayedProjects = this.getProjectSet(3);
     },
-    mounted() {
-        this.container = this.$refs.container;
-        this.startAutoScroll();
+    getProjectSet(count) {
+      const set = [];
+      for (let i = 0; i < count; i++) {
+        set.push(...this.projects.map(project => ({
+          ...project,
+          id: `${this.projectCounter}-${project.title}` // Unique id for each project
+        })));
+        this.projectCounter++;
+      }
+      return set;
     },
-    methods: {
-        startDrag(e) {
-            if (e.type.includes('mouse') && e.button !== 0) return; // Nur linke Maustaste
-            this.isDragging = true;
-            this.startX = e.type.includes('mouse') ? e.pageX : e.touches[0].pageX;
-            this.scrollLeft = this.container.scrollLeft;
-            this.stopAutoScroll();
-            this.container.style.cursor = 'grabbing';
-            this.container.style.userSelect = 'none';
-        },
-        drag(e) {
-            if (!this.isDragging) return;
-            e.preventDefault();
-            const x = e.type.includes('mouse') ? e.pageX : e.touches[0].pageX;
-            const walk = (this.startX - x) * 2;
-            this.container.scrollLeft = this.scrollLeft + walk;
-        },
-        stopDrag() {
-            if (!this.isDragging) return;
-            this.isDragging = false;
-            this.container.style.cursor = 'grab';
-            this.container.style.removeProperty('user-select');
-            this.startAutoScroll();
-        },
-        startAutoScroll() {
-            this.lastTime = performance.now();
-            this.animationId = requestAnimationFrame(this.autoScroll);
-        },
-        autoScroll(currentTime) {
-            if (this.isDragging) return;
-
-            const deltaTime = currentTime - this.lastTime;
-            this.lastTime = currentTime;
-
-            this.container.scrollLeft += this.speed * deltaTime;
-
-            if (this.container.scrollLeft >= this.container.scrollWidth - this.container.clientWidth) {
-                this.container.scrollLeft = 0;
-            }
-
-            this.animationId = requestAnimationFrame(this.autoScroll);
-        },
-        stopAutoScroll() {
-            if (this.animationId) {
-                cancelAnimationFrame(this.animationId);
-                this.animationId = null;
-            }
-        }
+    startDrag(e) {
+      if (e.type.includes('mouse') && e.button !== 0) return;
+      this.isDragging = true;
+      this.startX = e.type.includes('mouse') ? e.pageX : e.touches[0].pageX;
+      this.scrollLeft = this.container.scrollLeft;
+      this.stopAutoScroll();
+      this.container.style.cursor = 'grabbing';
+      this.container.style.userSelect = 'none';
     },
-    beforeUnmount() {
-        this.stopAutoScroll();
+    drag(e) {
+      if (!this.isDragging) return;
+      e.preventDefault();
+      const x = e.type.includes('mouse') ? e.pageX : e.touches[0].pageX;
+      const walk = (this.startX - x) * 2;
+      this.container.scrollLeft = this.scrollLeft + walk;
+      this.checkScrollPosition();
+    },
+    stopDrag() {
+      if (!this.isDragging) return;
+      this.isDragging = false;
+      this.container.style.cursor = 'grab';
+      this.container.style.removeProperty('user-select');
+      this.startAutoScroll();
+    },
+    startAutoScroll() {
+      this.lastTime = performance.now();
+      this.animationId = requestAnimationFrame(this.autoScroll);
+    },
+    autoScroll(currentTime) {
+      if (this.isDragging) return;
+      const deltaTime = currentTime - this.lastTime;
+      this.lastTime = currentTime;
+      
+      this.container.scrollLeft += this.speed * deltaTime;
+      this.checkScrollPosition();
+      
+      this.animationId = requestAnimationFrame(this.autoScroll);
+    },
+    stopAutoScroll() {
+      if (this.animationId) {
+        cancelAnimationFrame(this.animationId);
+        this.animationId = null;
+      }
+    },
+    checkScrollPosition() {
+      const scrollWidth = this.container.scrollWidth;
+      const clientWidth = this.container.clientWidth;
+      const scrollLeft = this.container.scrollLeft;
+      
+      if (scrollLeft >= scrollWidth / 3) {
+        // When we've scrolled past the first set, add a new set to the end
+        this.displayedProjects.push(...this.getProjectSet(1));
+        // Remove the first set to keep memory usage in check
+        this.displayedProjects.splice(0, this.projects.length);
+        // Adjust scroll position to maintain continuity
+        this.container.scrollLeft -= scrollWidth / 3;
+      } else if (scrollLeft <= 0) {
+        // When we're at the beginning, add a new set to the start
+        this.displayedProjects.unshift(...this.getProjectSet(1));
+        // Remove the last set to keep memory usage in check
+        this.displayedProjects.splice(-this.projects.length);
+        // Adjust scroll position to maintain continuity
+        this.container.scrollLeft += scrollWidth / 3;
+      }
     }
+  },
+  beforeUnmount() {
+    this.stopAutoScroll();
+  }
 };
 const AboutSection = {
     template: `
@@ -514,9 +531,9 @@ const AboutSection = {
                 const contactInfo = ref('Niels Hensler | E-Mail: info@webwai.de | 78224 Überlingen am Ried');
                 const portfolioProjects = ref([
                     {
-                        title: 'AdventureAssistant',
+                        title: 'MietparkAuer',
                         description: 'KI-gestützte Reiseplanungs-App für unvergessliche Abenteuer',
-                        image: 'assets/CaptureAdventureAssistant.png',
+                        image: 'assets/mietpark.png',
                         link: 'https://www.adventureassistant.de'
                     },
                     {
