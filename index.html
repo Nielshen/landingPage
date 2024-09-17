@@ -11,9 +11,6 @@
         <!-- Keywords -->
         <meta name="keywords" content="Webdesign, App-Entwicklung, KI-Integration, Cloud-Lösungen, Skalierbarkeit, IT-Support, Radolfzell, Konstanz, Singen, Chatbot, kreative Lösungen, digitale Infrastruktur, responsive Design, SEO-Optimierung, Machine Learning">
         
-        <!-- Autor -->
-        <meta name="author" content="Niels Hensler">
-        
         <!-- Robots -->
         <meta name="robots" content="index, follow">
         
@@ -267,7 +264,7 @@
   template: `
     <section id="portfolio">
       <h2>Unsere Erfolgsgeschichten</h2>
-      <div class="portfolio-container" ref="container" @mousedown="startDrag" @mousemove="drag" @mouseup="stopDrag" @mouseleave="stopDrag" @touchstart="startDrag" @touchmove="drag" @touchend="stopDrag">
+      <div class="portfolio-container" ref="container">
         <div class="portfolio" ref="portfolioRef">
           <div v-for="project in displayedProjects" :key="project.id" class="portfolio-item">
             <img :src="project.image" :alt="project.title">
@@ -297,36 +294,48 @@
     this.container = this.$refs.container;
     this.initializeDisplayedProjects();
     this.startAutoScroll();
+    this.addEventListeners();
   },
   methods: {
     initializeDisplayedProjects() {
-      // Initialize with three sets of projects
-      this.displayedProjects = this.getProjectSet(3);
+      this.displayedProjects = this.getProjectSet(1);
     },
     getProjectSet(count) {
       const set = [];
       for (let i = 0; i < count; i++) {
         set.push(...this.projects.map(project => ({
           ...project,
-          id: `${this.projectCounter}-${project.title}` // Unique id for each project
+          id: `${this.projectCounter}-${project.title}`
         })));
         this.projectCounter++;
       }
       return set;
     },
+    addEventListeners() {
+      this.container.addEventListener('pointerdown', this.startDrag);
+      window.addEventListener('pointermove', this.drag);
+      window.addEventListener('pointerup', this.stopDrag);
+      window.addEventListener('pointercancel', this.stopDrag);
+    },
+    removeEventListeners() {
+      this.container.removeEventListener('pointerdown', this.startDrag);
+      window.removeEventListener('pointermove', this.drag);
+      window.removeEventListener('pointerup', this.stopDrag);
+      window.removeEventListener('pointercancel', this.stopDrag);
+    },
     startDrag(e) {
-      if (e.type.includes('mouse') && e.button !== 0) return;
+      if (e.button !== 0) return; // Only respond to left mouse button
       this.isDragging = true;
-      this.startX = e.type.includes('mouse') ? e.pageX : e.touches[0].pageX;
+      this.startX = e.clientX;
       this.scrollLeft = this.container.scrollLeft;
       this.stopAutoScroll();
       this.container.style.cursor = 'grabbing';
       this.container.style.userSelect = 'none';
+      e.preventDefault(); // Prevent text selection
     },
     drag(e) {
       if (!this.isDragging) return;
-      e.preventDefault();
-      const x = e.type.includes('mouse') ? e.pageX : e.touches[0].pageX;
+      const x = e.clientX;
       const walk = (this.startX - x) * 2;
       this.container.scrollLeft = this.scrollLeft + walk;
       this.checkScrollPosition();
@@ -364,24 +373,19 @@
       const scrollLeft = this.container.scrollLeft;
       
       if (scrollLeft >= scrollWidth / 3) {
-        // When we've scrolled past the first set, add a new set to the end
         this.displayedProjects.push(...this.getProjectSet(1));
-        // Remove the first set to keep memory usage in check
         this.displayedProjects.splice(0, this.projects.length);
-        // Adjust scroll position to maintain continuity
         this.container.scrollLeft -= scrollWidth / 3;
       } else if (scrollLeft <= 0) {
-        // When we're at the beginning, add a new set to the start
         this.displayedProjects.unshift(...this.getProjectSet(1));
-        // Remove the last set to keep memory usage in check
         this.displayedProjects.splice(-this.projects.length);
-        // Adjust scroll position to maintain continuity
         this.container.scrollLeft += scrollWidth / 3;
       }
     }
   },
   beforeUnmount() {
     this.stopAutoScroll();
+    this.removeEventListeners();
   }
 };
 const AboutSection = {
