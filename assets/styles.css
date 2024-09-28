@@ -403,8 +403,8 @@ nav ul li a:hover {
 
 .portfolio-item img {
     width: 100%;
-    height: auto;
-    object-fit: cover;
+    height: 500px; /* Feste Höhe festlegen */
+    object-fit: cover; /* Bild beschneiden, um das Seitenverhältnis beizubehalten */
     border-radius: 10px;
 }
 
